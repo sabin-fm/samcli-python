@@ -6,10 +6,10 @@ Resources:
     Properties:
       Name: sam-deployment
       Description: Build process for a simple Python HelloWorld Application deployed using AWS SAM
-      ServiceRole: !Sub 'arn:aws:iam::${AWS::AccountId}:role/service-role/codebuild-sam-python-hello-world-service-role'
+      ServiceRole: !Sub 'arn:aws:iam::549847039622:role/service-role/codebuild-sam-build-service-role'
       Artifacts:
         Type: S3
-        Location: sam-artifacts-sou
+        Location: sam-cli-artifacts-sks
         Name: code-build-artifacts
         Path: ''
         NamespaceType: NONE
@@ -17,7 +17,7 @@ Resources:
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:4.0
       Source:
         Location: https://github.com/soumoks/sam-python-example.git
         Type: GITHUB
