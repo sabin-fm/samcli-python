@@ -9,6 +9,6 @@ phases:
       #Build spec reference
       #https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html
       # Package SAM template
-      - sam package --template-file sam_template.yml --s3-bucket sam-cli-artifacts-sks --output-template-file packaged.yaml
+      - sam package --template-file sam_template.yml --s3-bucket sam-cli-artifacts-sample --output-template-file packaged.yaml
       # Deploy packaged SAM template
       - sam deploy --template-file packaged.yaml --stack-name python-hello-world-sam-application --capabilities CAPABILITY_IAM
