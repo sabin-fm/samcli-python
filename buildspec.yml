@@ -1,9 +1,20 @@
 version: 0.2
 phases:
+  install:
+    runtime-versions:
+      python: 3.9
+    commands:
+      # Install the AWS CLI and SAM CLI
+      - pip3 install awscli aws-sam-cli
+      
   build:
     commands:
-    
-        
+      - sam validate --template template.yaml
+      - sam build -t template.yaml
+  post_build:
+    commands:
+      - sam build
+         
       - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
 
       # Package SAM template
