@@ -13,8 +13,12 @@ phases:
       - sam build -t template.yaml
   post_build:
     commands:
+    
       - echo Build started on `date`
       - echo Entered the build phase ...
+      
+      - sam build
+      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
 
       # Package SAM template
       - sam package --template-file sam_template.yml --s3-bucket samcli-python-bucket --output-template-file packaged.yaml
