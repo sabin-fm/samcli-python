@@ -8,10 +8,7 @@ phases:
       - pip3 install awscli aws-sam-cli
       
   build:
-    commands:
-      - sam validate --template template.yaml
-      - sam build -t template.yaml
-  post_build:
+ 
     commands:
       - sam build
          
