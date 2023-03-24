@@ -9,8 +9,8 @@ phases:
       
   build:
     commands:
-      - sam validate --template template.yaml
-      - sam build -t template.yaml
+      - sam validate --template sam_template.yml
+      - sam build -t sam_template.yml
   post_build:
     commands:
     
