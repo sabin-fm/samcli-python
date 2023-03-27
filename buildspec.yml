@@ -10,6 +10,8 @@ phases:
   build:
     commands:
       - sam build
-      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --template-file template.yml --stack-name samcli-python-stack --capabilities CAPABILITY_IAM
+      - sam package --template-file sam_template.yml --s3-bucket sam-cli-artifacts-sample --output-template-file packaged.yml
+      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset 
+      - sam deploy --template-file packaged.yml --stack-name samcli-python-stack --capabilities CAPABILITY_IAM
       
  
