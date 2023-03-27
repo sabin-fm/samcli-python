@@ -7,9 +7,14 @@ phases:
       # Install the AWS CLI and SAM CLI
       - pip3 install awscli aws-sam-cli
       
+       
   build:
     commands:
-      - sam build
+      - sam validate --template template.yml
+      - sam build -t template.yml
+      
+  post_build:
+    commands:
       - sam package --template-file template.yml --s3-bucket samcli-python-bucket --output-template-file packaged.yml
       - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --template-file packaged.yml --stack-name samcli-python-stack --capabilities CAPABILITY_IAM
       
