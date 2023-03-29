@@ -14,7 +14,7 @@ Resources:
       Timeout: 3
       Events:
         MyRestApi:
-          Type:  'RestApi'
+          Type: RestApi
           Properties:
             Name: my-first-Api
             Path: /
