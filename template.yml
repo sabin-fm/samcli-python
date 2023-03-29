@@ -1,82 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
-    
+Transform: 'AWS::Serverless-2016-10-31'
+Description: A starter AWS Lambda function.
 Resources:
-  MyLambdaFunction:
-    Type: 'AWS::Lambda::Function'
+  helloworldpython:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      FunctionName : my-test-funtion
-      Code:
-        ZipFile: |
-          def lambda_handler(event, context):
-              return {
-                  'statusCode': 200,
-                  'body': 'Hello from Lambda!'
-              }
-      Handler: index.lambda_handler
-      Role: !GetAtt MyLambdaRole.Arn
-      Runtime: python3.8
-      
-  MyLambdaRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-            Action: sts:AssumeRole
-      Path: '/'
-      Policies:
-        - PolicyName: MyLambdaPolicy
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: '*'
-  MyRestApi:
-      
-    Type: 'AWS::ApiGateway::RestApi'
-    Properties:
-      Name: my-test-rest-Api
-      EndpointConfiguration:
-        Types:
-          - REGIONAL
-
-  MyResource:
-    Type: 'AWS::ApiGateway::Resource'
-    Properties:
-      RestApiId: !Ref MyRestApi
-      ParentId: !GetAtt MyRestApi.RootResourceId
-      PathPart: 'hello'
-  MyMethod:
-    Type: 'AWS::ApiGateway::Method'
-    Properties:
-      RestApiId: !Ref MyRestApi
-      ResourceId: !Ref MyResource
-      HttpMethod: GET
-      AuthorizationType: NONE
-      Integration:
-        Type: AWS_PROXY
-        IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:548616401217:function:my-test-funtion/invocations'
-  MyDeployment:
-    Type: 'AWS::ApiGateway::Deployment'
-    DependsOn:
-      - MyMethod
-    Properties:
-      RestApiId: !Ref MyRestApi
-  MyStage:
-    Type: 'AWS::ApiGateway::Stage'
-    Properties:
-      RestApiId: !Ref MyRestApi
-      DeploymentId: !Ref MyDeployment
-      StageName: dev
-Outputs:
-  ApiEndpoint:
-    Description: 'API endpoint URL'
-    Value: !Sub 'https://my-test-rest-Api.execute-api.us-east-1.amazonaws.com/dev/hello'
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.9
+      CodeUri: .
+      Description: A starter AWS Lambda function.
+      MemorySize: 128
+      Timeout: 3
+      Events:
+        HelloWorldApi:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
