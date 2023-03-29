@@ -1,59 +1,79 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
+    
 Resources:
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
-      FunctionName : my-first-lambda-funtion
-      Handler: lambda_function.lambda_handler
+      FunctionName : my-test-funtion
+      Code:
+        ZipFile: |
+          def lambda_handler(event, context):
+              return {
+                  'statusCode': 200,
+                  'body': 'Hello from Lambda!'
+              }
+      Handler: index.lambda_handler
       Role: !GetAtt MyLambdaRole.Arn
-      Runtime: python3.9
-         
-  LambdaExecutionRole:
-    Type: "AWS::IAM::Role"
+      Runtime: python3.8
+      
+  MyLambdaRole:
+    Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: "my-lambda-execution-role"
       AssumeRolePolicyDocument:
-        Version: "2012-10-17"
+        Version: '2012-10-17'
         Statement:
-          - Effect: "Allow"
+          - Effect: Allow
             Principal:
-              Service:
-                - "lambda.amazonaws.com"
-            Action:
-              - "sts:AssumeRole"
-      Path: "/"
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-  RestApi:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: '/'
+      Policies:
+        - PolicyName: MyLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: '*'
+  MyRestApi:
+      
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: my-first-rest-api
-      Description: My REST API Gateway
-      EndpointConfiguration:
-        Types:
-          - REGIONAL
-  ApiGatewayResource:
+      Name: my-test-rest-Api
+
+  MyResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      RestApiId: !Ref RestApi
-      ParentId: !GetAtt RestApi.RootResourceId
-      PathPart: my-resource
-  ApiGatewayMethod:
+      RestApiId: !Ref MyRestApi
+      ParentId: !GetAtt MyRestApi.RootResourceId
+      PathPart: 'hello'
+  MyMethod:
     Type: 'AWS::ApiGateway::Method'
     Properties:
-      RestApiId: !Ref RestApi
-      ResourceId: !Ref ApiGatewayResource
+      RestApiId: !Ref MyRestApi
+      ResourceId: !Ref MyResource
       HttpMethod: GET
       AuthorizationType: NONE
       Integration:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
-        Uri: !Sub "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:548616401217:function:my-fisrt-lambda-funtion/invocations"
-  ApiGatewayDeployment:
+        Uri: !Sub 'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:548616401217:function:my-test-funtion/invocations'
+  MyDeployment:
     Type: 'AWS::ApiGateway::Deployment'
+    DependsOn:
+      - MyMethod
     Properties:
-      RestApiId: !Ref RestApi
-      StageName: prod
+      RestApiId: !Ref MyRestApi
+  MyStage:
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      RestApiId: !Ref MyRestApi
+      DeploymentId: !Ref MyDeployment
+      StageName: dev
 Outputs:
-  RestApiUrl:
-    Value: !Sub "https://my-first-rest-api.execute-api.us-east-1.amazonaws.com/prod/my-resource"
+  ApiEndpoint:
+    Description: 'API endpoint URL'
+    Value: !Sub 'https://my-test-rest-Api.execute-api.us-east-1.amazonaws.com/dev/hello'
