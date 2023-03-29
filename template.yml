@@ -43,6 +43,9 @@ Resources:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: my-test-rest-Api
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
 
   MyResource:
     Type: 'AWS::ApiGateway::Resource'
