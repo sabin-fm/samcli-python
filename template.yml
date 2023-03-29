@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Resources:
-   MyLambdaFunction:
+  MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName : my-first-lambda-funtion
@@ -14,7 +14,7 @@ Resources:
                   'statusCode': 200,
                   'body': 'Hello from Lambda!'
               }
-      
+         
   LambdaExecutionRole:
     Type: "AWS::IAM::Role"
     Properties:
