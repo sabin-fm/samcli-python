@@ -2,9 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: A starter AWS Lambda function.
 Resources:
-  helloworldpython:
+  MyLambdaFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
+      FunctionName : my-first-funtion
       Handler: lambda_function.lambda_handler
       Runtime: python3.9
       CodeUri: .
@@ -12,8 +13,9 @@ Resources:
       MemorySize: 128
       Timeout: 3
       Events:
-        HelloWorldApi:
-          Type: Api
+        MyRestApi:
+          Type:  'AWS::ApiGateway::RestApi'
           Properties:
+            Name: my-first-Api
             Path: /
             Method: GET
