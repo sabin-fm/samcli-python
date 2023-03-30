@@ -6,7 +6,7 @@ Resources:
       FunctionName : my-first-lambda-funtion
   
       Handler: lambda_function.lambda_handler
-      Role: !Sub 'arn:aws:iam::${AWS::AccountId}:role/lambda-execution-role'
+      Role: !Sub 'arn:aws:iam::548616401217:role/lambda-execution-role'
       Runtime: python3.8
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
