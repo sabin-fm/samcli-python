@@ -1,19 +1,56 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Transform: 'AWS::Serverless-2016-10-31'
-Description: A starter AWS Lambda function.
 Resources:
-  helloworldpython:
-    Type: 'AWS::Serverless::Function'
+  MyLambdaFunction:
+    Type: 'AWS::Lambda::Function'
     Properties:
-      Handler: lambda_function.lambda_handler
-      Runtime: python3.9
-      CodeUri: .
-      Description: A starter AWS Lambda function.
-      MemorySize: 128
-      Timeout: 3
-      Events:
-        HelloWorldApi:
-          Type: Api
-          Properties:
-            Path: /
-            Method: GET
+      FunctionName : my-first-lambda-funtion
+      Code:
+        ZipFile: |
+          import json
+          
+          def lambda_handler(event, context):
+              body = {
+                  "message": "Hello, world!"
+              }
+              response = {
+                  "statusCode": 200,
+                  "body": json.dumps(body)
+              }
+              return response
+      Handler: index.lambda_handler
+      Role: !Sub 'arn:aws:iam::${AWS::AccountId}:role/lambda-execution-role'
+      Runtime: python3.8
+  MyApiGateway:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: my-first-restapi
+  MyApiResource:
+    Type: 'AWS::ApiGateway::Resource'
+    Properties:
+      ParentId: !GetAtt [ MyApiGateway, RootResourceId ]
+      PathPart: my-resource
+      RestApiId: !Ref MyApiGateway
+  MyApiMethod:
+    Type: 'AWS::ApiGateway::Method'
+    Properties:
+      HttpMethod: GET
+      ResourceId: !Ref MyApiResource
+      RestApiId: !Ref MyApiGateway
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: !Sub 'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:548616401217:function:my-first-lambda-funtion/invocations'
+  MyApiDeployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    DependsOn: MyApiMethod
+    Properties:
+      RestApiId: !Ref MyApiGateway
+      StageName: prod
+  MyLambdaPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref MyLambdaFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:us-east-1:548616401217:my-first-restapi/*/GET/my-resource'
