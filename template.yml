@@ -3,7 +3,7 @@ Resources:
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
-      FunctionName : my-first-lambda-funtion
+      FunctionName : my-first-function
   
       Handler: lambda_function.lambda_handler
       Role: !GetAtt MyLambdaRole.Arn
@@ -31,16 +31,19 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: '*'
+                
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: my-first-restapi
+      Name: my-first-api
+      
   MyApiResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
       ParentId: !GetAtt [ MyApiGateway, RootResourceId ]
       PathPart: my-resource
       RestApiId: !Ref MyApiGateway
+      
   MyApiMethod:
     Type: 'AWS::ApiGateway::Method'
     Properties:
@@ -51,17 +54,19 @@ Resources:
       Integration:
         IntegrationHttpMethod: POST
         Type: AWS_PROXY
-        Uri: !Sub 'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:548616401217:function:my-first-lambda-funtion/invocations'
+        Uri: !Sub 'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:548616401217:function:my-first-function/invocations'
+  
   MyApiDeployment:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn: MyApiMethod
     Properties:
       RestApiId: !Ref MyApiGateway
       StageName: prod
+      
   MyLambdaPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref MyLambdaFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub 'arn:aws:execute-api:us-east-1:548616401217:my-first-restapi/*/GET/my-resource'
+      SourceArn: !Sub 'arn:aws:execute-api:us-east-1:548616401217:my-first-api/*/GET/my-resource'
