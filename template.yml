@@ -6,8 +6,31 @@ Resources:
       FunctionName : my-first-lambda-funtion
   
       Handler: lambda_function.lambda_handler
-      Role: !Sub 'arn:aws:iam::548616401217:role/lambda-execution-role'
+      Role: !GetAtt MyLambdaRole.Arn
       Runtime: python3.9
+      
+  MyLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Path: '/'
+      Policies:
+        - PolicyName: MyLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: '*'
   MyApiGateway:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
