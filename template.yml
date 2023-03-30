@@ -1,14 +1,25 @@
 AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Region:
+    Type: String
+    Default: us-east-1
+    Description: The AWS region in which to create resources.
+
+  AccountId:
+    Type: String
+    Default: 548616401217
+    Description: The AWS account ID where the resources will be created.
+
 Resources:
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
       FunctionName : my-first-function
-  
       Handler: lambda_function.lambda_handler
       Role: !GetAtt MyLambdaRole.Arn
       Runtime: python3.9
-      
+
   MyLambdaRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -31,42 +42,52 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: '*'
-                
-  MyApiGateway:
+
+  MyRestApi:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
       Name: my-first-api
-      
-  MyApiResource:
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  MyResource:
     Type: 'AWS::ApiGateway::Resource'
     Properties:
-      ParentId: !GetAtt [ MyApiGateway, RootResourceId ]
-      PathPart: my-resource
-      RestApiId: !Ref MyApiGateway
-      
-  MyApiMethod:
+      RestApiId: !Ref MyRestApi
+      ParentId: !GetAtt MyRestApi.RootResourceId
+      PathPart: 'hello'
+
+  MyMethod:
     Type: 'AWS::ApiGateway::Method'
     Properties:
+      RestApiId: !Ref MyRestApi
+      ResourceId: !Ref MyResource
       HttpMethod: GET
-      ResourceId: !Ref MyApiResource
-      RestApiId: !Ref MyApiGateway
       AuthorizationType: NONE
       Integration:
-        IntegrationHttpMethod: POST
         Type: AWS_PROXY
-        Uri: !Sub 'arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:548616401217:function:my-first-function/invocations'
-  
-  MyApiDeployment:
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations'
+
+  MyDeployment:
     Type: 'AWS::ApiGateway::Deployment'
-    DependsOn: MyApiMethod
+    DependsOn:
+      - MyMethod
     Properties:
-      RestApiId: !Ref MyApiGateway
-      StageName: prod
-      
+      RestApiId: !Ref MyRestApi
+
+  MyStage:
+    Type: 'AWS::ApiGateway::Stage'
+    Properties:
+      RestApiId: !Ref MyRestApi
+      DeploymentId: !Ref MyDeployment
+      StageName: dev
+
   MyLambdaPermission:
     Type: 'AWS::Lambda::Permission'
     Properties:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref MyLambdaFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub 'arn:aws:execute-api:us-east-1:548616401217:my-first-api/*/GET/my-resource'
+      SourceArn: !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi}/*/GET/hello'
