@@ -15,7 +15,7 @@ Resources:
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
-      FunctionName : my-test-function
+      FunctionName: my-test-function
       Handler: lambda_function.lambda_handler
       Role: !GetAtt MyLambdaRole.Arn
       Runtime: python3.9
@@ -73,17 +73,16 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction.Arn}/invocations'
-        
-   MyAuthorizer:
+
+  MyAuthorizer:
     Type: 'AWS::ApiGateway::Authorizer'
     Properties:
       Name: my-cognito-authorizer
       Type: COGNITO_USER_POOLS
       IdentitySource: method.request.header.Authorization
       RestApiId: !Ref MyRestApi
-      ProviderARNs: 
+      ProviderARNs:
         - !Sub arn:aws:cognito-idp:${Region}:${AccountId}:userpool/us-east-1_t4ca30NhA    #${UserPoolId}
-
 
   MyDeployment:
     Type: 'AWS::ApiGateway::Deployment'
@@ -107,4 +106,4 @@ Resources:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref MyLambdaFunction
       Principal: apigateway.amazonaws.com
-      SourceArn: !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi}/*/GET/hello'
+      SourceArn: !Sub '
