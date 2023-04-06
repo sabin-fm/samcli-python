@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-
+#testcase
 Parameters:
   Region:
     Type: String
@@ -15,7 +15,7 @@ Resources:
   MyLambdaFunction:
     Type: 'AWS::Lambda::Function'
     Properties:
-      FunctionName : my-first-function
+      FunctionName : my-test-function
       Handler: lambda_function.lambda_handler
       Role: !GetAtt MyLambdaRole.Arn
       Runtime: python3.9
@@ -46,7 +46,7 @@ Resources:
   MyRestApi:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
-      Name: my-first-api
+      Name: my-test-api
       EndpointConfiguration:
         Types:
           - REGIONAL
