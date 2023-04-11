@@ -52,7 +52,6 @@ Resources:
                   - logs:PutLogEvents
                 Resource: '*'
 
-
   MyRestApi1:
     Type: 'AWS::ApiGateway::RestApi'
     Properties:
@@ -60,7 +59,6 @@ Resources:
       EndpointConfiguration:
         Types:
           - REGIONAL
-
 
   MyResource1:
     Type: 'AWS::ApiGateway::Resource'
@@ -88,8 +86,6 @@ Resources:
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction1.Arn}/invocations'
         
-        
-
   MyAuthorizer:
     Type: 'AWS::ApiGateway::Authorizer'
     Properties:
@@ -104,7 +100,6 @@ Resources:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
       - MyMethod1
-      
     Properties:
       RestApiId: !Ref MyRestApi1
 
@@ -123,9 +118,37 @@ Resources:
       Action: 'lambda:InvokeFunction'
       FunctionName: !Ref MyLambdaFunction1
       Principal: apigateway.amazonaws.com
-      SourceArn: 
-        - !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/GET/user','arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/DELETE/user','arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/PATCH/user','arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/POST/user'
+      SourceArn: !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/GET/user'
         
+  MyLambdaPermission2:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref MyLambdaFunction1
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/DELETE/user'
       
-            
- 
+  MyLambdaPermission3:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref MyLambdaFunction1
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/OPTIONS/user'
+      
+  MyLambdaPermission4:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref MyLambdaFunction1
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/PATCH/user'
+  
+  MyLambdaPermission5:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Ref MyLambdaFunction1
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/POST/user'
+     
