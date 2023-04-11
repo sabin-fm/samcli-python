@@ -124,10 +124,7 @@ Resources:
       FunctionName: !Ref MyLambdaFunction1
       Principal: apigateway.amazonaws.com
       SourceArn: 
-        - !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/GET/user'
-        - !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/DELETE/user'
-        - !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/PATCH/user'
-        - !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/POST/user'
+        - !Sub 'arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/GET/user','arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/DELETE/user','arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/PATCH/user','arn:aws:execute-api:${Region}:${AccountId}:${MyRestApi1}/${Env}/POST/user'
         
       
             
