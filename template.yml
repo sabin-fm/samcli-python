@@ -66,8 +66,8 @@ Resources:
       RestApiId: !Ref MyRestApi1
       ParentId: !GetAtt MyRestApi1.RootResourceId
       PathPart: 'user'
- 
-
+  
+  
   MyMethod1:
     Type: 'AWS::ApiGateway::Method'
     Properties:
@@ -80,8 +80,9 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction1.Arn}/invocations'
-        
- MyMethod2:
+  
+
+   MyMethod2:
     Type: 'AWS::ApiGateway::Method'
     Properties:
       RestApiId: !Ref MyRestApi1
@@ -100,52 +101,6 @@ Resources:
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction1.Arn}/invocations'
         
-  
-  MyMethod3:
-    Type: 'AWS::ApiGateway::Method'
-    Properties:
-      RestApiId: !Ref MyRestApi1
-      ResourceId: !Ref MyResource1
-      HttpMethod: OPTIONS
-      AuthorizationType: COGNITO_USER_POOLS  # Set authorization type to COGNITO_USER_POOLS
-      AuthorizerId: !Ref MyAuthorizer  # Set the ID of the authorizer
-      Integration:
-        Type: AWS_PROXY
-        IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction1.Arn}/invocations'
-        
-  MyMethod4:
-    Type: 'AWS::ApiGateway::Method'
-    Properties:
-      RestApiId: !Ref MyRestApi1
-      ResourceId: !Ref MyResource1
-      HttpMethod: PATCH
-      AuthorizationType: COGNITO_USER_POOLS  # Set authorization type to COGNITO_USER_POOLS
-      AuthorizerId: !Ref MyAuthorizer  # Set the ID of the authorizer
-      Integration:
-        Type: AWS_PROXY
-        IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction1.Arn}/invocations'
- 
-  MyMethod5:
-    Type: 'AWS::ApiGateway::Method'
-    Properties:
-      RestApiId: !Ref MyRestApi1
-      ResourceId: !Ref MyResource1
-      HttpMethod: POST
-      AuthorizationType: COGNITO_USER_POOLS  # Set authorization type to COGNITO_USER_POOLS
-      AuthorizerId: !Ref MyAuthorizer  # Set the ID of the authorizer
-      Integration:
-        Type: AWS_PROXY
-        IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction1.Arn}/invocations'Type: COGNITO_USER_POOLS  # Set authorization type to COGNITO_USER_POOLS
-      AuthorizerId: !Ref MyAuthorizer  # Set the ID of the authorizer
-      Integration:
-        Type: AWS_PROXY
-        IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction1.Arn}/invocations'
-        
-  
   MyMethod3:
     Type: 'AWS::ApiGateway::Method'
     Properties:
@@ -184,8 +139,7 @@ Resources:
         Type: AWS_PROXY
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${Region}:lambda:path/2015-03-31/functions/${MyLambdaFunction1.Arn}/invocations'
-
-        
+  
   MyAuthorizer:
     Type: 'AWS::ApiGateway::Authorizer'
     Properties:
