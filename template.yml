@@ -128,7 +128,7 @@ Resources:
     Properties:
       RestApiId: !Ref MyRestApi1
       ResourceId: !Ref MyResource1
-      HttpMethod: PATCH
+      HttpMethod: POST
       AuthorizationType: COGNITO_USER_POOLS  # Set authorization type to COGNITO_USER_POOLS
       AuthorizerId: !Ref MyAuthorizer  # Set the ID of the authorizer
       Integration:
