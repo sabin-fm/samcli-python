@@ -154,6 +154,11 @@ Resources:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
       - MyMethod1
+      - MyMethod2
+      - MyMethod3
+      - MyMethod4
+      - MyMethod5
+      
     Properties:
       RestApiId: !Ref MyRestApi1
 
